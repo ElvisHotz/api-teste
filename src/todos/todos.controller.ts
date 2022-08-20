@@ -9,6 +9,7 @@ import {
   Param,
   Post,
   Put,
+  Render,
 } from '@nestjs/common';
 
 @Controller('todos')
@@ -16,6 +17,22 @@ export class TodosController {
   constructor(private readonly service: TodosService) {}
 
   @Get()
+  @Render('todos')
+  async root() {
+    //: Promise<{ title: string; todos: Promise<TodoEntity[]> }>
+    // return {
+    //   title: 'Aqui nao',
+    //   todos: this.service.findAll().then((result) => {
+    //     console.log(`de log view -> #${result}`);
+    //     return result;
+    //   }),
+    // };
+
+    return this.service
+      .findAll()
+      .then((result) => (result ? { todos: result } : { todos: [] }));
+  }
+  @Get('find')
   @HttpCode(200)
   getTodos(): Promise<TodoEntity[]> {
     return this.service.findAll();
